@@ -7,7 +7,7 @@ import {
   ArrowLeftOnRectangleIcon,
   DocumentPlusIcon
 } from "@heroicons/react/24/solid";
-import { Home, Users, AddPitches } from "@/pages/dashboard";
+import { AddProvider, Home, Users } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 import AddUsers from "./pages/dashboard/AddUsers";
 import Provider from "./pages/dashboard/Provider";
@@ -40,7 +40,7 @@ export const routes = [
       {
         icon: <TableCellsIcon {...icon} />,
         name: "Provider",
-        path: "/Provider",
+        path: "/Providers",
         element: <Provider />,
       },
       {
@@ -65,7 +65,7 @@ export const routes = [
         icon: <UserPlusIcon {...icon} />,
         name: "Add provider",
         path: "/provider/add",
-        element: <AddPitches />,
+        element: <AddProvider />,
       },
       {
         icon: <UserPlusIcon {...icon} />,

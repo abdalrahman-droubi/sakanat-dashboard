@@ -28,8 +28,8 @@ export function Sidenav({ brandImg, brandName, routes }) {
         className={`relative border-b ${sidenavType === "dark" ? "border-white/20" : "border-blue-gray-50"
           }`}
       >
-        <Link to="/" className="flex items-center gap-4 py-6 px-8">
-          <Avatar src="/img/goatlogo.png" size="md" />
+        <Link to="/" className="text-center py-6 px-8">
+          {/* <Avatar src="/img/goatlogo.png" size="md" /> */}
           <Typography
             variant="h6"
             color={sidenavType === "dark" ? "white" : "blue-gray"}
@@ -96,7 +96,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
 
 Sidenav.defaultProps = {
   brandImg: "/img/logo-ct.png",
-  brandName: "GOAT Field",
+  brandName: "Sakanat Dashboard",
 };
 
 Sidenav.propTypes = {

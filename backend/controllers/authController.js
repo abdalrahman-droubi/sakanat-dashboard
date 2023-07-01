@@ -1,10 +1,15 @@
 const { User } = require("../models/User");
+const { Provider } = require("../models/Providers");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const handleLogin = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password,role } = req.body;
+  console.log(req.body);
   try {
+    if(role==='admin'){
+      
+    }
     const foundUser = await User.findOne({ email: email });
     if (foundUser.active == false)
       return res.status(401).json({ error: "This Email not active " }); //Unauthorized
