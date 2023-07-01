@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -11,8 +11,11 @@ import {
   Radio,
 } from "@material-tailwind/react";
 import axios from "axios";
+import { UserDataContext } from "@/context/userDataContext";
 
 export function SignIn() {
+  const {userRefresh} = useContext(UserDataContext)
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -30,10 +33,19 @@ export function SignIn() {
     e.preventDefault();
     console.log(formData);
     axios.post('http://localhost:5550/api/auth', formData)
-    .then((res)=>{
-console.log(res);
+    .then((res) => {
+      localStorage.setItem("token", JSON.stringify(res.data.token));
+      console.log(res);
+      userRefresh()
+      if(res.data.success === 'admin'){
+        navigate("/dashboard/home");
+        console.log('aaaaa');
+      }
     })
-    // Add your logic to handle form submission
+    .catch((error) => {
+      console.log(error);
+      // setErrorLogin(error.response.data.error);
+    });
   };
 
   return (

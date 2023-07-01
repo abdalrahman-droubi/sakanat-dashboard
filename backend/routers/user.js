@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const {getUser, updateUser,deleteUser,RetrieveUser} = require('../controllers/userController');
-const verifyUser = require('../middleware/verifyUser');
 
 /// ALL About Users
 router.get('/getUser/:status', getUser);
