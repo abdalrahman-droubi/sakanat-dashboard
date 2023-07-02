@@ -4,6 +4,7 @@ import Step2 from "../../component/AddProvider/Step2";
 import Step1 from "../../component/AddProvider/Step1";
 import Step3 from "../../component/AddProvider/Step3";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 
 export function AddProvider() {
@@ -20,6 +21,8 @@ export function AddProvider() {
     workHours: ''
   });
   const [error, setError] = useState()
+  const [successadd, setSuccessAdd] = useState()
+  const [numInputStep2, setNumInputStep2] = useState(0)
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -30,15 +33,21 @@ export function AddProvider() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
   const handleSubmit = () => {
-    axios.post('http://localhost:5550/api/addProvider', providerData).then((res) => {
-      console.log(res);
-    }).catch((error) => {
-      if (error.response.data.error === 'email already exists try another one') {
-        setActiveStep(0)
-        setError(error.response.data.error)
-      }
-      console.log(error);
-    })
+    axios.post('http://localhost:5550/api/addProvider', providerData)
+      .then((res) => {
+        if (res.data.success) {
+          setActiveStep(3)
+          setSuccessAdd(res.data.success)
+          setError('')
+          console.log(res);
+        }
+      }).catch((error) => {
+        if (error.response.data.error === 'email already exists try another one') {
+          setActiveStep(0)
+          setError(error.response.data.error)
+        }
+        console.log(error);
+      })
   }
   // const handleError = () => {
   //   setError(()=>{
@@ -61,20 +70,29 @@ export function AddProvider() {
     <>
       <div className="flex flex-col mt-5">
         <ul className="steps">
-          <li className={activeStep <= 3 ? "step step-primary" : "step"}>Register</li>
-          <li className={activeStep >= 1 ? "step step-primary" : "step"}>Company Details</li>
-          <li className={activeStep >= 2 ? "step step-primary" : "step"}>Hours Work</li>
+          <li className={activeStep <= 3 ? "step step-accent" : "step"}>Register</li>
+          <li className={activeStep >= 1 ? "step step-accent" : "step"}>Company Details</li>
+          <li className={activeStep >= 2 ? "step step-accent" : "step"}>Hours Work</li>
         </ul>
         <div className="flex flex-col mx-auto mb-10 w-full">
           {activeStep === 3 ? (
-            <div className=" m-auto h-96 flex flex-col items-center justify-evenly">
-              <p>All steps completed</p>
+            <div className=" m-auto h-96 flex flex-col items-center justify-center">
+              <h4 className="text-black text-lg mb-6">{successadd}</h4>
+              <Link to='/dashboard/Providers'>
+                <Button variant="gradient" color="green" ripple={true}>
+                  Go to providers table
+                </Button>
+              </Link>
             </div>
           ) : (
             <div>
               {/* Render the form for each step */}
               {activeStep === 0 && <Step1 providerData={providerData} setProviderData={setProviderData} error={error} />}
-              {activeStep === 1 && <Step2 providerData={providerData} setProviderData={setProviderData} />}
+              {activeStep === 1 && <Step2
+                providerData={providerData}
+                setProviderData={setProviderData}
+                numInputStep2={numInputStep2}
+                setNumInputStep2={setNumInputStep2} />}
               {activeStep === 2 && <Step3 providerData={providerData} setProviderData={setProviderData} />}
 
               {/* Navigation buttons */}

@@ -21,14 +21,13 @@ export default function UserProviderContext({ children }) {
           if (response.data) {
             setUser(response.data);
             setUserType(response.data.role);
-            console.log(response.data);
           }
         })
         .catch((error) => {
           console.error(error);
         });
     } else {
-      setUserType(false);
+      setUserType("notLogin");
     }
   };
   useEffect(() => {

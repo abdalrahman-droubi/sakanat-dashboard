@@ -9,19 +9,19 @@ const handleLogin = async (req, res) => {
   try {
     if (role === "admin") {
       foundUser = await User.findOne({ email: email });
+      if (!foundUser)
+      return res.status(401).json({ error: "Email is incorrect" }); //Unauthorized
       if (foundUser.role !== "admin")
         return res.status(401).json({ error: "This Email is Unauthorized " }); //Unauthorized
       if (foundUser.active == false)
         return res.status(401).json({ error: "This Email not active " }); //Unauthorized
-      if (!foundUser)
-        return res.status(401).json({ error: "Email is incorrect" }); //Unauthorized
     }
     if (role === "provider") {
       foundUser = await Provider.findOne({ email: email });
-      if (foundUser.active == false)
-        return res.status(401).json({ error: "This Email not active " }); //Unauthorized
       if (!foundUser)
         return res.status(401).json({ error: "Email is incorrect" }); //Unauthorized
+      if (foundUser.active == false)
+        return res.status(401).json({ error: "This Email not active " }); //Unauthorized
     }
 
     // evaluate password

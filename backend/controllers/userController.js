@@ -1,5 +1,5 @@
 const { User } = require("../models/User");
-const bcrypt = require("bcrypt");
+
 
 const getUser = async (req, res) => {
   try {
@@ -12,6 +12,10 @@ const getUser = async (req, res) => {
       case "notactive":
         const userNotActive = await User.find({ active: false });
         res.json(userNotActive);
+        break;
+      case "numberUsers":
+        const userallnum = await User.estimatedDocumentCount();
+        res.json(userallnum);
         break;
       default:
         const user = await User.find();

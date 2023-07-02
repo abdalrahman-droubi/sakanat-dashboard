@@ -9,19 +9,20 @@ import {
   Button,
   Typography,
   Radio,
+  Alert,
 } from "@material-tailwind/react";
 import axios from "axios";
 import { UserDataContext } from "@/context/userDataContext";
 
 export function SignIn() {
-  const {userRefresh} = useContext(UserDataContext)
+  const { userRefresh } = useContext(UserDataContext)
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     role: "",
   });
-
+  const [errorLogin, setErrorLogin] = useState()
   const handleChange = (e) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -33,19 +34,18 @@ export function SignIn() {
     e.preventDefault();
     console.log(formData);
     axios.post('http://localhost:5550/api/auth', formData)
-    .then((res) => {
-      localStorage.setItem("token", JSON.stringify(res.data.token));
-      console.log(res);
-      userRefresh()
-      if(res.data.success === 'admin'){
-        navigate("/dashboard/home");
-        console.log('aaaaa');
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      // setErrorLogin(error.response.data.error);
-    });
+      .then((res) => {
+        localStorage.setItem("token", JSON.stringify(res.data.token));
+        console.log(res);
+        if (res.data.success === 'admin') {
+          userRefresh()
+          navigate("/dashboard/home");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrorLogin(error.response.data.error);
+      });
   };
 
   return (
@@ -105,6 +105,13 @@ export function SignIn() {
               <Button variant="gradient" color="green" fullWidth type="submit">
                 Sign In
               </Button>
+              {errorLogin && (
+                        <Alert className="mt-2" color="red" variant="gradient">
+                            <span className="">
+                                {errorLogin}
+                            </span>
+                        </Alert>
+                    )}
             </CardFooter>
           </Card>
         </form>

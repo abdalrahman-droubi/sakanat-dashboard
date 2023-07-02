@@ -8,7 +8,7 @@ import {
   DocumentPlusIcon
 } from "@heroicons/react/24/solid";
 import { AddProvider, Home, Users } from "@/pages/dashboard";
-import { SignIn, SignUp } from "@/pages/auth";
+import { SignIn } from "@/pages/auth";
 import AddUsers from "./pages/dashboard/AddUsers";
 import Provider from "./pages/dashboard/Provider";
 import EditPitche from "./pages/dashboard/EditPitche";

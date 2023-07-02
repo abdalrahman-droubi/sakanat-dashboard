@@ -10,7 +10,6 @@ import {
   Button,
   IconButton,
 } from "@material-tailwind/react";
-import { bookingData } from "@/data";
 import axios from "axios";
 import { useEffect, useState } from "react";
 

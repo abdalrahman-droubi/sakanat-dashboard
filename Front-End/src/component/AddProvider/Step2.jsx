@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Input, Option, Select, Textarea } from '@material-tailwind/react'
 
-function Step2({ providerData, setProviderData }) {
-    const [numInput, setNumInput] = useState(0)
+function Step2({ providerData, setProviderData, numInputStep2, setNumInputStep2 }) {
 
     const handleCityChange = (e) => {
         setProviderData((prevData) => ({
@@ -23,7 +22,7 @@ function Step2({ providerData, setProviderData }) {
             description: e.target.value
         }));
     };
-    
+
     const handleImageChange = (e) => {
         setProviderData((prevData) => ({
             ...prevData,
@@ -51,7 +50,11 @@ function Step2({ providerData, setProviderData }) {
                 </div>
                 <form >
                     <div className='flex gap-8'>
-                        <Select size="lg" label="City" onChange={(e) => handleCityChange(e)} value={providerData.city?providerData.city:null}>
+                        <Select
+                            size="lg"
+                            label="City"
+                            onChange={(e) => handleCityChange(e)}
+                            value={providerData.city ? providerData.city : null}>
                             <Option value='Amman'>Amman</Option>
                             <Option value='Zarqa'>Zarqa</Option>
                             <Option value='Irbid'>Irbid</Option>
@@ -65,7 +68,11 @@ function Step2({ providerData, setProviderData }) {
                             <Option value='Aqaba'>Aqaba</Option>
                             <Option value='Ajloun'>Ajloun</Option>
                         </Select>
-                        <Select size="lg" label="Service Type" onChange={(e) => handleServiceTypeChange(e)} >
+                        <Select
+                            size="lg"
+                            label="Service Type"
+                            onChange={(e) => handleServiceTypeChange(e)}
+                            value={providerData.serviceType ? providerData.serviceType : null}>
                             <Option value='hostel'>hostel</Option>
                             <Option value='House Keeping'>House Keeping</Option>
                             <Option value='Dry Clean'>Dry Clean</Option>
@@ -74,18 +81,42 @@ function Step2({ providerData, setProviderData }) {
                     </div>
                     <br />
                     <div>
-                        <Textarea size='lg' maxLength="100" rows="4" label='Describtion' resize={true} onChange={handleDescriptionChange} value={providerData.description} />
+                        <Textarea
+                            size='lg'
+                            maxLength="100"
+                            rows="4"
+                            label='Describtion'
+                            resize={true}
+                            onChange={handleDescriptionChange}
+                            value={providerData.description} />
                         <p className="text-sm text-black ">**Character limit: 100</p>
                     </div>
                     <br />
-                    <Input type='file' accept="image/*" multiple label='Company Image' size='lg' onChange={handleImageChange} />
+                    <Input
+                        type='file'
+                        accept="image/*"
+                        multiple
+                        label='Company Image'
+                        size='lg'
+                        onChange={handleImageChange} />
                     <br />
-                    <Input type="number" onChange={(e) => setNumInput(Number(e.target.value))} min={0} max={15} label="Number of Services" />
+                    <Input
+                        type="number"
+                        onChange={(e) => setNumInputStep2(Number(e.target.value))}
+                        min={0}
+                        max={15}
+                        label="Number of Services"
+                        value={numInputStep2 === 0 ? null : numInputStep2} />
                     <br />
                     <div className='flex gap-5 flex-wrap ' style={{ width: "500px" }}>
-                        {[...Array(numInput)].map((ele, index) => (
+                        {[...Array(numInputStep2)].map((ele, index) => (
                             <div className='w-fit' key={index}>
-                                <Input key={index} label={`Service ${index + 1}`} size="md" value={providerData.services[index] || ''} onChange={(e) => handleServiceChange(index, e.target.value)} />
+                                <Input 
+                                key={index} 
+                                label={`Service ${index + 1}`} 
+                                size="md" 
+                                value={providerData.services[index] || ''} 
+                                onChange={(e) => handleServiceChange(index, e.target.value)} />
                             </div>
                         ))}
                     </div>

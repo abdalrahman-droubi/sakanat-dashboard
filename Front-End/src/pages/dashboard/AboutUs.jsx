@@ -10,7 +10,6 @@ import {
   Button
 } from "@material-tailwind/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { authorsTableData, projectsTableData } from "@/data";
 import { useEffect, useState } from "react";
 import axios from "axios";
 <style>
