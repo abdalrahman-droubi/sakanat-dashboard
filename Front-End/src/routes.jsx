@@ -17,6 +17,7 @@ import ContactUs from "./pages/dashboard/ContactUs";
 // import Tables from "./pages/dashboard/AboutUs";
 import AboutUs from "./pages/dashboard/AboutUs";
 import DeletedUsers from "./pages/dashboard/DeletedUsers";
+import DeletedProviders from "./pages/dashboard/DeletedProviders";
 const icon = {
   className: "w-5 h-5 text-inherit",
 };
@@ -76,8 +77,14 @@ export const routes = [
       {
         icon: <TrashIcon {...icon} />,
         name: "Deleted Users",
-        path: "/Deleted Users",
+        path: "/Deleted/Users",
         element: <DeletedUsers />,
+      },
+      {
+        icon: <TrashIcon {...icon} />,
+        name: "Deleted Providers",
+        path: "/Deleted/Provider",
+        element: <DeletedProviders />,
       },
     ],
   },

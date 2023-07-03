@@ -34,6 +34,10 @@ const ProviderSchema = new mongoose.Schema(
       type: [String],
       required: true,
     },
+    phoneNumber: {
+      type: Number,
+      require: true,
+    },
     workHours: {
       type: {
         Monday: {
@@ -70,7 +74,7 @@ const ProviderSchema = new mongoose.Schema(
     active: { type: Boolean, default: true },
     role: {
       type: String,
-      default: 'provider',
+      default: "provider",
     },
   },
   {

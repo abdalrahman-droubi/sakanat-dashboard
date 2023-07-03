@@ -10,15 +10,16 @@ import {
 } from "@material-tailwind/react";
 import Swal from "sweetalert2";
 
-export function DeletedUsers() {
-    const [usersData, setUsersData] = useState([]);  // State to store users data
+
+function DeletedProviders() {
+    const [ProvidersData, setProvidersData] = useState([]);  // State to store users data
     const [Refresh, setRefresh] = useState(true);   // State to run useEffect that get users data
 
 
     // Fetch users data from the server
     useEffect(() => {
-        axios.get('http://localhost:5550/api/getUser/notactive').then((response) => {
-            setUsersData(response.data);
+        axios.get('http://localhost:5550/api/getProvider/notactive').then((response) => {
+            setProvidersData(response.data);
         }).catch((error) => {
             console.error('Error fetching users data:', error);
         })
@@ -36,7 +37,7 @@ export function DeletedUsers() {
             confirmButtonText: "Yes, change it!",
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.put(`http://localhost:5550/api/RetrieveUser/${id}`)
+                axios.put(`http://localhost:5550/api/RetrieveProvider/${id}`)
                     .then((res) => {
                         if (res.data.success) {
                             setRefresh(!Refresh)
@@ -56,7 +57,7 @@ export function DeletedUsers() {
                 <CardHeader variant="gradient" color="green" className="mb-8 p-6">
                     <div className="grid grid-cols-6 gap-x-8 justify-end">
                         <Typography variant="h6" color="white">
-                            Deleted Users Table
+                            Deleted Provider Table
                         </Typography>
                     </div>
                 </CardHeader>
@@ -65,7 +66,7 @@ export function DeletedUsers() {
                     <table className="w-full min-w-[640px] table-auto">
                         <thead>
                             <tr>
-                                {["ID", "Name", "Email", "phone Number", "Role", "Action"].map((el) => (
+                                {["ID", "Name", "Email", "city", 'service Type', "Action"].map((el) => (
                                     <th
                                         key={el}
                                         className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -81,9 +82,8 @@ export function DeletedUsers() {
                             </tr>
                         </thead>
                         <tbody>
-                            {usersData
-                                .sort((a, b) => (a.role === "admin" ? -1 : b.role === "admin" ? 1 : 0))
-                                .map(({ _id, fullName, email, role, phoneNumber }, key) => {
+                            {ProvidersData
+                                .map(({ _id, companyName, email, city, serviceType }, key) => {
                                     const className = `py-3 px-5 border-b border-blue-gray-50
                                         }`;
                                     return (
@@ -99,7 +99,7 @@ export function DeletedUsers() {
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {fullName}
+                                                    {companyName}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
@@ -109,12 +109,12 @@ export function DeletedUsers() {
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {phoneNumber}
+                                                    {city}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {role}
+                                                    {serviceType}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
@@ -136,7 +136,7 @@ export function DeletedUsers() {
                 </CardBody>
             </Card>
         </div>
-    );
+    )
 }
 
-export default DeletedUsers;
+export default DeletedProviders

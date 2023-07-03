@@ -9,6 +9,7 @@ const addProvider = async (req, res) => {
     city,
     serviceType,
     description,
+    phoneNumber,
     companyImage,
     services,
     workHours,
@@ -30,6 +31,7 @@ const addProvider = async (req, res) => {
       city,
       serviceType,
       description,
+      phoneNumber,
       companyImage,
       services,
       workHours,
@@ -56,8 +58,8 @@ const getProvider = async (req, res) => {
         res.json(userNotActive);
         break;
         case "numberProviders":
-          const userallnum = await Provider.estimatedDocumentCount();
-          res.json(userallnum);
+          const userAllNum = await Provider.estimatedDocumentCount();
+          res.json(userAllNum);
           break;
       default:
         const user = await Provider.find();
@@ -65,8 +67,35 @@ const getProvider = async (req, res) => {
         break;
     }
   } catch (error) {
-    res.status(500).json({ error: `${error.message} in user/getUser` });
-    console.log({ error: `${error.message} in user/getUser` });
+    res.status(500).json({ error: `${error.message} in provider/getProvider` });
+    console.log({ error: `${error.message} in provider/getProvider` });
   }
 };
-module.exports = { addProvider, getProvider };
+
+
+const RetrieveProvider = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await Provider.findByIdAndUpdate(id, {
+      active: true,
+    });
+    res.status(200).json({ success: "Provider Retrieve successfully" });
+  } catch (error) {
+    res.status(500).json({ error: `${error.message} in provider/updateUser` });
+    console.error("Error Retrieve user in provider/RetrieveProvider", error);
+  }
+};
+
+const deleteProvider = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await Provider.findByIdAndUpdate(id, {
+      active: false,
+    });
+    res.status(200).json({ success: "Provider deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: `${error.message} in provider/updateUser` });
+    console.error("Error delete user in provider/deleteProvider", error);
+  }
+};
+module.exports = { addProvider, getProvider,RetrieveProvider,deleteProvider };

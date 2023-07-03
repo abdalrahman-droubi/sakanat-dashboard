@@ -16,6 +16,7 @@ export function AddProvider() {
     city: "",
     serviceType: "",
     description: "",
+    phoneNumber: "",
     companyImage: [],
     services: [],
     workHours: ''

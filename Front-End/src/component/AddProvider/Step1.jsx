@@ -52,6 +52,22 @@ export function Step({ setProviderData, providerData,error}) {
                     )}
                     <br />
                     <Input
+                        type="text"
+                        size="lg"
+                        label="phone Number"
+                        name='phoneNumber'
+                        value={providerData.phoneNumber}
+                        onChange={handleChange}
+                    />
+                    {/* {error && (
+                        <Alert color="red" variant="gradient">
+                            <span className="">
+                                {error}
+                            </span>
+                        </Alert>
+                    )} */}
+                    <br />
+                    <Input
                         type="password"
                         size="lg"
                         label="Password"
