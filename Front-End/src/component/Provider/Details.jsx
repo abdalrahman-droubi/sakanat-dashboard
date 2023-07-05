@@ -8,6 +8,8 @@ import {
     IconButton,
 } from '@material-tailwind/react'
 import { XMarkIcon } from '@heroicons/react/24/solid'
+import { Carousel } from 'react-responsive-carousel'
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 function Details({ handleOpen, setOpen, open, provider }) {
     return (
         <>
@@ -27,12 +29,31 @@ function Details({ handleOpen, setOpen, open, provider }) {
                     <section className="w-auto">
                         <div className="items-end mx-auto my-5 max-w-screen-lg rounded-md border border-gray-300 text-blue-gray-600 shadow-md">
                             <div className="relative flex h-full flex-col text-blue-gray-600 md:flex-row">
-                                <div className=" w-1/3 flex items-start  pt-1 md:p-4">
-                                    <img
-                                        className="block h-1/2 max-w-full w-full rounded-md shadow-lg"
-                                        src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2560&q=80"
-                                        alt="Shop image"
-                                    />
+                                {/* <div className=" w-1/3 flex items-start  pt-1 md:p-4">
+                                    {provider.companyImage.map((img) => {
+                                        console.log(img);
+                                        return (
+                                            <img
+                                                className="block h-1/2 max-w-full w-full rounded-md shadow-lg"
+                                                src={`http://localhost:5550/${img}`}
+                                                alt="Shop image"
+                                            />
+                                        )
+                                    })}
+                                </div> */}
+
+                                <div className=" w-1/3 h-2/5  flex items-start  pt-1 md:p-4">
+                                    <Carousel >
+                                        {provider.companyImage.map((img, index) => {
+                                            return (
+                                                <div>
+                                                    <img src={`http://localhost:5550/${img}`} alt="Image 1" className="block h-1/2 max-w-full w-full rounded-md shadow-lg" />
+                                                    {/* <p className="legend">Legend 1</p> */}
+                                                </div>
+                                            )
+                                        })}
+                                    </Carousel>
+
                                 </div>
                                 <div className="relative p-6 md:w-4/6">
                                     <div className="flex sm:flex-row flex-col-reverse justify-between items-start">

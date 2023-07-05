@@ -6,6 +6,7 @@ import {
 } from "@/widgets";
 import routes from "@/routes";
 import { useMaterialTailwindController } from "@/context";
+import PageNotFound from "@/pages/PageNotFound";
 
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -26,6 +27,7 @@ export function Dashboard() {
                 <Route exact path={path} element={element} />
               ))
           )}
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
         <div className="text-blue-gray-600">
           <Footer />

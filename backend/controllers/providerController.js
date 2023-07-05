@@ -10,21 +10,47 @@ const addProvider = async (req, res) => {
     serviceType,
     description,
     phoneNumber,
-    companyImage,
     services,
     workHours,
   } = req.body;
+
   try {
     // email check
     const provider = await Provider.findOne({ email: email });
     if (provider !== null) {
       return res
         .status(409)
-        .json({ error: "email already exists try another one" });
+        .json({ error: "email already exists, try another one" });
     }
+
     // password hash
     const hashedPwd = await bcrypt.hash(password, 10);
-    const Newuser = await Provider.create({
+
+    // Create an array to store the uploaded file paths
+    const companyImagePaths = [];
+
+    // Check if files were uploaded
+    if (req.files && req.files.length > 0) {
+      // Loop through the uploaded files and save them
+      req.files.forEach((file) => {
+        // Save the file path to the array
+        companyImagePaths.push(file.path);
+      });
+    }
+    console.log(
+      companyImagePaths,
+      companyName,
+      email,
+      password,
+      city,
+      serviceType,
+      description,
+      phoneNumber,
+      services,
+      workHours
+    );
+    // Create a new provider with the uploaded image paths
+    const newProvider = await Provider.create({
       companyName,
       email,
       password: hashedPwd,
@@ -32,13 +58,14 @@ const addProvider = async (req, res) => {
       serviceType,
       description,
       phoneNumber,
-      companyImage,
+      companyImage: companyImagePaths,
       services,
-      workHours,
+      workHours:JSON.parse(workHours),
     });
-    res
-      .status(201)
-      .json({ success: `New provider ${companyName} created successfully!` });
+
+    res.status(201).json({
+      success: `New provider ${companyName} created successfully!`,
+    });
   } catch (error) {
     res.status(500).json({ error: `${error.message} in addProviders` });
     console.log(error);
@@ -57,10 +84,10 @@ const getProvider = async (req, res) => {
         const userNotActive = await Provider.find({ active: false });
         res.json(userNotActive);
         break;
-        case "numberProviders":
-          const userAllNum = await Provider.estimatedDocumentCount();
-          res.json(userAllNum);
-          break;
+      case "numberProviders":
+        const userAllNum = await Provider.estimatedDocumentCount();
+        res.json(userAllNum);
+        break;
       default:
         const user = await Provider.find();
         res.json(user);
@@ -71,7 +98,6 @@ const getProvider = async (req, res) => {
     console.log({ error: `${error.message} in provider/getProvider` });
   }
 };
-
 
 const RetrieveProvider = async (req, res) => {
   try {
@@ -98,4 +124,4 @@ const deleteProvider = async (req, res) => {
     console.error("Error delete user in provider/deleteProvider", error);
   }
 };
-module.exports = { addProvider, getProvider,RetrieveProvider,deleteProvider };
+module.exports = { addProvider, getProvider, RetrieveProvider, deleteProvider };

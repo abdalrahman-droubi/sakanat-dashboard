@@ -27,7 +27,7 @@ const ProviderSchema = new mongoose.Schema(
       required: true,
     },
     companyImage: {
-      type: [{}],
+      type: [String],
       required: true,
     },
     services: {

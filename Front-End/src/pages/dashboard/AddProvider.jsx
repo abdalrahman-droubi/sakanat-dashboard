@@ -33,8 +33,33 @@ export function AddProvider() {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+
+
   const handleSubmit = () => {
-    axios.post('http://localhost:5550/api/addProvider', providerData)
+    const formData = new FormData();
+    formData.append('companyName', providerData.companyName);
+    formData.append('email', providerData.email);
+    formData.append('password', providerData.password);
+    formData.append('city', providerData.city);
+    formData.append('serviceType', providerData.serviceType);
+    formData.append('description', providerData.description);
+    formData.append('phoneNumber', providerData.phoneNumber);
+    formData.append('workHours', JSON.stringify(providerData.workHours));
+
+    // Append each image file to the FormData object
+    for (let i = 0; i < providerData.companyImage.length; i++) {
+      formData.append('companyImage', providerData.companyImage[i]);
+    }
+    console.log(formData.companyImage);
+    // Append each service to the FormData object
+    for (let i = 0; i < providerData.services.length; i++) {
+      formData.append('services', providerData.services[i]);
+    }
+    axios.post('http://localhost:5550/api/addProvider', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
       .then((res) => {
         if (res.data.success) {
           setActiveStep(3)

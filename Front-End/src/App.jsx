@@ -3,23 +3,29 @@ import { Dashboard, Auth } from "@/layouts";
 import { useContext } from "react";
 import { UserDataContext } from "./context/userDataContext";
 import Loader from './pages/loader'
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   const { userType } = useContext(UserDataContext)
   return (
-    <Routes>
-      {userType === 'admin' ? <><Route path="/dashboard/*" element={<Dashboard />} />
-        <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
+    <>
+      {userType === 'admin' ? <>
+        <Routes>
+          <Route path="/dashboard/*" element={<Dashboard />} />
+        </Routes>
       </>
-        : userType === 'provider' ? <Route path="/auth/*" element={<Auth />} />
+        : userType === 'provider' ? <>
+          <Route path="/auth/*" element={<Auth />} />
+        </>
           : userType === "notLogin" ? <>
-            <Route path="/auth/*" element={<Auth />} />
-            <Route path="*" element={<Navigate to="/auth/sign-in" replace />} />
+            <Routes>
+              <Route path="/auth/*" element={<Auth />} />
+            </Routes>
           </> :
-          <Route path="*" element={<Loader/>} />
-            
+            <Loader />
+
       }
-    </Routes >
+    </>
   );
 }
 

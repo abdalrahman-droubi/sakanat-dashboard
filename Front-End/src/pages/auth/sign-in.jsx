@@ -32,12 +32,16 @@ export function SignIn() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
     axios.post('http://localhost:5550/api/auth', formData)
       .then((res) => {
         localStorage.setItem("token", JSON.stringify(res.data.token));
         console.log(res);
         if (res.data.success === 'admin') {
+          console.log(res.data.success);
+          userRefresh()
+          navigate("/dashboard/home");
+        }else if (res.data.success === 'provider') {
+          console.log(res.data.success);
           userRefresh()
           navigate("/dashboard/home");
         }

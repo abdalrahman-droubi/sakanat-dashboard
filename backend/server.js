@@ -4,8 +4,10 @@ const cors = require('cors')
 const app = express()
 const connectDB = require('./config/db')
 // const errorHandler = require('./middleware/error')
+const path = require('path')
 
-
+app.use("/images", express.static(path.join(__dirname, "images")));
+// app.use('/images', express.static('images'));
 connectDB()
 
 app.use(express.json({limit: "50mb"}));

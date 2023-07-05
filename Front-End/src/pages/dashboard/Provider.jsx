@@ -18,13 +18,14 @@ export function Provider() {
   const [Providers, setProviders] = useState([])
   const [provider, setProvider] = useState()
   const [open, setOpen] = useState(false);
+  const [FilterData , setFilterData]=useState([])
 
   const handleOpen = () => setOpen(!open);
 
   useEffect(() => {
     axios.get('http://localhost:5550/api/getProvider/active').then((response) => {
-
       setProviders(response.data);
+      setFilterData(response.data)
     }).catch((error) => {
       console.error('Error fetching providers data:', error);
     })
@@ -60,6 +61,16 @@ export function Provider() {
   };
 
 
+  const handleSearch = (Searchede) => {
+    const filteredData = Providers.filter((item) =>item.companyName.toLowerCase().includes(Searchede.toLowerCase())
+    ||item.city.toLowerCase().includes(Searchede.toLowerCase()) 
+    ||item.serviceType.toLowerCase().includes(Searchede.toLowerCase()) 
+  );
+  setFilterData(filteredData)
+
+  };
+  
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12 ">
       <Card>
@@ -77,21 +88,24 @@ export function Provider() {
               </label> */}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-black">
-                <i class="fa-solid fa-magnifying-glass"></i>
+                  <i className="fa-solid fa-magnifying-glass"></i>
                 </div>
                 <input
                   type="search"
                   id="default-search"
                   className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Company name, Service type, City"
-                  required=""
+                  required
+                  onChange={(e) => {
+                    handleSearch(e.target.value)
+                  }}
                 />
-                <Button
+                {/* <Button
                   type="submit"
                   className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   Search
-                </Button>
+                </Button> */}
               </div>
             </form>
 
@@ -101,7 +115,7 @@ export function Provider() {
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["ID", "Name", "Email", "city", 'service Type', "Action"].map((el) => (
+                {["ID", "Name", "Email", "Phone number", "city", 'service Type', "Action"].map((el) => (
                   <th
                     key={el}
                     className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -117,7 +131,7 @@ export function Provider() {
               </tr>
             </thead>
             <tbody>
-              {Providers
+              {FilterData
                 .map((provider, key) => {
                   const className = `py-3 px-5 border-b border-blue-gray-50`;
                   return (
@@ -139,6 +153,11 @@ export function Provider() {
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
                           {provider.email}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-semibold text-blue-gray-600">
+                          0{provider.phoneNumber}
                         </Typography>
                       </td>
                       <td className={className}>
