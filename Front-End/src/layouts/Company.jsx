@@ -1,28 +1,28 @@
 import { Routes, Route } from "react-router-dom";
 import {
-  Sidenav,
+  SideNavCompany,
   DashboardNavbar,
   Footer,
+  Sidenav,
+  CompanyNav,
 } from "@/widgets";
 import routes from "@/routes";
-import { useMaterialTailwindController } from "@/context";
 import PageNotFound from "@/pages/PageNotFound";
 
-export function Dashboard() {
-  const [controller, dispatch] = useMaterialTailwindController();
-  const { sidenavType } = controller;
+export function Company() {
+
 
   return (
     <div className="min-h-screen bg-blue-gray-50/50">
-      <Sidenav
+      <SideNavCompany
         routes={routes}
       />
       <div className="p-4 xl:ml-80">
-        <DashboardNavbar />
+        <CompanyNav/>
         <Routes>
           {routes.map(
             ({ layout, pages }) =>
-              layout === "dashboard" &&
+              layout === "company" &&
               pages.map(({ path, element }) => (
                 <Route exact path={path} element={element} />
               ))
@@ -37,6 +37,6 @@ export function Dashboard() {
   );
 }
 
-Dashboard.displayName = "/src/layout/Copmany.jsx";
+Company.displayName = "/src/layout/Copmany.jsx";
 
-export default Dashboard;
+export default Company;

@@ -43,7 +43,7 @@ export function SignIn() {
         }else if (res.data.success === 'provider') {
           console.log(res.data.success);
           userRefresh()
-          navigate("/dashboard/home");
+          navigate("/company/home");
         }
       })
       .catch((error) => {

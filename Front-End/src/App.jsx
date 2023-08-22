@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Dashboard, Auth } from "@/layouts";
+import { Dashboard, Auth, Company } from "@/layouts";
 import { useContext } from "react";
 import { UserDataContext } from "./context/userDataContext";
 import Loader from './pages/loader'
@@ -15,7 +15,10 @@ function App() {
         </Routes>
       </>
         : userType === 'provider' ? <>
-          <Route path="/auth/*" element={<Auth />} />
+        {console.log('aaaaa')}
+          <Routes>
+            <Route path="/company/*" element={<Company />} />
+          </Routes>
         </>
           : userType === "notLogin" ? <>
             <Routes>

@@ -18,6 +18,7 @@ import ContactUs from "./pages/dashboard/ContactUs";
 import AboutUs from "./pages/dashboard/AboutUs";
 import DeletedUsers from "./pages/dashboard/DeletedUsers";
 import DeletedProviders from "./pages/dashboard/DeletedProviders";
+import Company from "./pages/company/Company";
 const icon = {
   className: "w-5 h-5 text-inherit",
 };
@@ -102,14 +103,14 @@ export const routes = [
     ],
   },
   {
-    title: "without",
-    layout: "dashboard",
+    title: "company",
+    layout: "company",
     pages: [
       {
         icon: <TableCellsIcon {...icon} />,
-        name: "Edit pitch",
-        path: "/pitches/edit/:id",
-        element: <EditPitche />,
+        name: "profile",
+        path: "/home",
+        element: <Company />,
       },
     ],
   },

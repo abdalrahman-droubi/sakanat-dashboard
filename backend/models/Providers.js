@@ -76,6 +76,10 @@ const ProviderSchema = new mongoose.Schema(
       type: String,
       default: "provider",
     },
+    rate: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
