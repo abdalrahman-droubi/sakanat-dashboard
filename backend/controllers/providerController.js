@@ -59,7 +59,7 @@ const addProvider = async (req, res) => {
       description,
       phoneNumber,
       companyImage: companyImagePaths,
-      services,
+      services:JSON.parse(services),
       workHours:JSON.parse(workHours),
     });
 

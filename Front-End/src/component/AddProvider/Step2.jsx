@@ -30,15 +30,29 @@ function Step2({ providerData, setProviderData, numInputStep2, setNumInputStep2 
         }));
     };
 
-    const handleServiceChange = (index, value) => {
+    // const handleServiceChange = (index, value) => {
+    //     setProviderData((prevData) => {
+    //         const updatedServices = [...prevData.services];
+    //         updatedServices[index] = value;
+    //         return {
+    //             ...prevData,
+    //             services: updatedServices
+    //         };
+    //     });
+    // };
+    const handleServiceChange = (index, field, value) => {
         setProviderData((prevData) => {
             const updatedServices = [...prevData.services];
-            updatedServices[index] = value;
+            if (!updatedServices[index]) {
+                updatedServices[index] = { name: '', price: '' };
+            }
+            updatedServices[index][field] = value;
             return {
                 ...prevData,
-                services: updatedServices
+                services: updatedServices,
             };
         });
+        console.log(providerData);
     };
     return (
         <div className="mx-auto my-10 w-auto flex flex-col items-center">
@@ -83,13 +97,14 @@ function Step2({ providerData, setProviderData, numInputStep2, setNumInputStep2 
                     <div>
                         <Textarea
                             size='lg'
-                            maxLength="100"
+                            maxLength="300"
                             rows="4"
                             label='Describtion'
                             resize={true}
                             onChange={handleDescriptionChange}
                             value={providerData.description} />
-                        <p className="text-sm text-black ">**Character limit: 100</p>
+                        <span className="text-sm text-black ">**Character limit: 300</span>
+                        <span>/{providerData.description.length}</span>
                     </div>
                     <br />
                     <Input
@@ -105,14 +120,14 @@ function Step2({ providerData, setProviderData, numInputStep2, setNumInputStep2 
                         onChange={(e) => {
                             if (e.target.value > 15) e.target.value = 15
                             if (e.target.value < 0) e.target.value = 0
-                                setNumInputStep2(Number(e.target.value))
+                            setNumInputStep2(Number(e.target.value))
                         }}
                         min={0}
                         max={15}
                         label="Number of Services"
                         value={numInputStep2 === 0 ? "" : numInputStep2} />
                     <br />
-                    <div className='flex gap-5 flex-wrap ' style={{ width: "500px" }}>
+                    {/* <div className='flex gap-5 flex-wrap ' style={{ width: "500px" }}>
                         {[...Array(numInputStep2)].map((ele, index) => (
                             <div className='w-fit' key={index}>
                                 <Input
@@ -121,6 +136,24 @@ function Step2({ providerData, setProviderData, numInputStep2, setNumInputStep2 
                                     size="md"
                                     value={providerData.services[index] || ''}
                                     onChange={(e) => handleServiceChange(index, e.target.value)} />
+                            </div>
+                        ))}
+                    </div> */}
+                    <div className='flex gap-7 justify-around flex-wrap ' style={{ width: '500px' }}>
+                        {[...Array(numInputStep2)].map((ele, index) => (
+                            <div className='w-fit flex flex-col gap-2' key={index}>
+                                <Input
+                                    label={`Service ${index + 1} Name`}
+                                    size='md'
+                                    value={providerData.services[index]?.name || ''}
+                                    onChange={(e) => handleServiceChange(index, 'name', e.target.value)}
+                                />
+                                <Input
+                                    label={`Service ${index + 1} Price`}
+                                    size='md'
+                                    value={providerData.services[index]?.price || ''}
+                                    onChange={(e) => handleServiceChange(index, 'price', e.target.value)}
+                                />
                             </div>
                         ))}
                     </div>

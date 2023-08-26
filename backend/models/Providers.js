@@ -31,7 +31,12 @@ const ProviderSchema = new mongoose.Schema(
       required: true,
     },
     services: {
-      type: [String],
+      type: [
+        {
+          name: {type:String},
+          price: {type:Number},
+        },
+      ],
       required: true,
     },
     phoneNumber: {

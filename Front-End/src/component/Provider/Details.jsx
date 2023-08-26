@@ -71,7 +71,10 @@ function Details({ handleOpen, setOpen, open, provider }) {
                                     <div className="flex flex-col flex-wrap md:flex-row md:items-end gap-1 mt-3">
                                         <strong className="font-sans text-base">services: </strong>
                                         {provider.services.map((ele, index) => (
-                                            <Chip className="h-7 w- lg:w-fit" size="sm" color="green" value={`${ele}`} key={index} />
+                                            <div>
+                                            <Chip className="h-7 w- lg:w-fit" size="sm" color="green" value={`${ele.name}`} key={index} />
+                                            <Chip className="h-7 w- lg:w-fit" size="sm" color="green" value={`${ele.price}`} key={index} />
+                                            </div>
                                         ))}
                                     </div>
                                     <div className="mt-5">

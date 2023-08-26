@@ -50,11 +50,18 @@ export function AddProvider() {
     for (let i = 0; i < providerData.companyImage.length; i++) {
       formData.append('companyImage', providerData.companyImage[i]);
     }
-    console.log(formData.companyImage);
+    
     // Append each service to the FormData object
-    for (let i = 0; i < providerData.services.length; i++) {
-      formData.append('services', providerData.services[i]);
-    }
+    // for (let i = 0; i < providerData.services.length; i++) {
+    //   formData.append('services', providerData.services[i]);
+    // }
+    const formattedServices = providerData.services.map((service) => ({
+      name: service.name,
+      price: parseInt(service.price),
+    }));
+    formData.append("services", JSON.stringify(formattedServices));
+    console.log(formData.companyImage);
+    
     axios.post('http://localhost:5550/api/addProvider', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
