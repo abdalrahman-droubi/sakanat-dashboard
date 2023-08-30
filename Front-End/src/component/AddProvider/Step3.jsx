@@ -24,9 +24,10 @@ function Step3({ providerData, setProviderData }) {
             ...prevData,
             workHours: workHours,
           }));
+          console.log(workHours);
     };
     const hoursOptions = [
-        { value: "", label: "Close" },
+        { value: "Close", label: "Close" },
         ...Array.from({ length: 24 }, (_, i) => ({
           value: i.toString().padStart(2, "0") + ":00",
           label: i.toString().padStart(2, "0") + ":00",

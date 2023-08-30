@@ -87,7 +87,7 @@ function Step2({ providerData, setProviderData, numInputStep2, setNumInputStep2 
                             label="Service Type"
                             onChange={(e) => handleServiceTypeChange(e)}
                             value={providerData.serviceType ? providerData.serviceType : ""}>
-                            <Option value='hostel'>hostel</Option>
+                            <Option value='Hostel'>Hostel</Option>
                             <Option value='House Keeping'>House Keeping</Option>
                             <Option value='Dry Clean'>Dry Clean</Option>
                             <Option value='Maintenance'>Maintenance </Option>
@@ -127,18 +127,6 @@ function Step2({ providerData, setProviderData, numInputStep2, setNumInputStep2 
                         label="Number of Services"
                         value={numInputStep2 === 0 ? "" : numInputStep2} />
                     <br />
-                    {/* <div className='flex gap-5 flex-wrap ' style={{ width: "500px" }}>
-                        {[...Array(numInputStep2)].map((ele, index) => (
-                            <div className='w-fit' key={index}>
-                                <Input
-                                    key={index}
-                                    label={`Service ${index + 1}`}
-                                    size="md"
-                                    value={providerData.services[index] || ''}
-                                    onChange={(e) => handleServiceChange(index, e.target.value)} />
-                            </div>
-                        ))}
-                    </div> */}
                     <div className='flex gap-7 justify-around flex-wrap ' style={{ width: '500px' }}>
                         {[...Array(numInputStep2)].map((ele, index) => (
                             <div className='w-fit flex flex-col gap-2' key={index}>

@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button, Spinner } from "@material-tailwind/react";
 import { PuffLoader } from "react-spinners";
 
 function loader() {

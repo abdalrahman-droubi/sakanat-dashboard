@@ -17,7 +17,7 @@ export function Company() {
       <SideNavCompany
         routes={routes}
       />
-      <div className="p-4 xl:ml-80">
+      <div className="p-4 xl:ml-72">
         <CompanyNav/>
         <Routes>
           {routes.map(

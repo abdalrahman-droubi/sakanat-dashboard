@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const { Provider } = require("../models/Providers");
+const { ServicesRequest } = require("../models/ServicesRequest");
 
 const addProvider = async (req, res) => {
   const {
@@ -37,19 +38,6 @@ const addProvider = async (req, res) => {
         companyImagePaths.push(file.path);
       });
     }
-    console.log(
-      companyImagePaths,
-      companyName,
-      email,
-      password,
-      city,
-      serviceType,
-      description,
-      phoneNumber,
-      services,
-      workHours
-    );
-    // Create a new provider with the uploaded image paths
     const newProvider = await Provider.create({
       companyName,
       email,
@@ -59,8 +47,8 @@ const addProvider = async (req, res) => {
       description,
       phoneNumber,
       companyImage: companyImagePaths,
-      services:JSON.parse(services),
-      workHours:JSON.parse(workHours),
+      services: JSON.parse(services),
+      workHours: JSON.parse(workHours),
     });
 
     res.status(201).json({
@@ -124,4 +112,74 @@ const deleteProvider = async (req, res) => {
     console.error("Error delete user in provider/deleteProvider", error);
   }
 };
-module.exports = { addProvider, getProvider, RetrieveProvider, deleteProvider };
+
+const getOneProvider = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const oneProvider = await Provider.findById(id);
+    const completed = await ServicesRequest.countDocuments({
+      provider: id,
+      status: "completed",
+    });
+    const rejected = await ServicesRequest.countDocuments({
+      provider: id,
+      status: "rejected",
+    });
+    const pending = await ServicesRequest.countDocuments({
+      provider: id,
+      status: "pending",
+    });
+    const inprogress = await ServicesRequest.countDocuments({
+      provider: id,
+      status: "inprogres",
+    });
+
+    res
+      .status(200)
+      .json({ oneProvider, rejected, pending, inprogress, completed });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: `${error.message} in provider/getOneProvider` });
+    console.error("Error delete user in provider/deleteProvider", error);
+  }
+};
+
+const updateProviderAccount = async (req, res) => {
+  try {
+    const { companyName, password, newPassword } = req.body;
+    const { id } = req.params;
+    const provider = await Provider.findById(id);
+
+    if (password) {
+      const truePassword = await bcrypt.compare(password, provider.password);
+      if (!truePassword)
+        return res.status(401).json({ error: "incorrect password" });
+
+      const hashpassword = await bcrypt.hash(newPassword, 10);
+      provider.companyName = companyName || provider.companyName;
+      provider.password = hashpassword;
+      const updatedUser = await provider.save();
+
+      res.status(200).json(updatedUser);
+    } else {
+      provider.companyName = companyName || provider.companyName;
+      const updatedUser = await provider.save();
+      res.status(200).json(updatedUser);
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: `${error.message} in updateProviderAccount` });
+    console.error("Error updateProviderAccount:", error);
+  }
+};
+
+module.exports = {
+  addProvider,
+  getProvider,
+  RetrieveProvider,
+  deleteProvider,
+  getOneProvider,
+  updateProviderAccount
+};

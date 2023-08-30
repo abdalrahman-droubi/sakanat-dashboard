@@ -19,12 +19,14 @@ import Swal from "sweetalert2";
 export function Users() {
   const [usersData, setUsersData] = useState([]);  // State to store users data
   const [Refresh, setRefresh] = useState(true);   // State to run useEffect that get users data
+  const [FilterData , setFilterData]=useState([])
 
 
   // Fetch users data from the server
   useEffect(() => {
     axios.get('http://localhost:5550/api/getUser/active').then((response) => {
       setUsersData(response.data);
+      setFilterData(response.data)
     }).catch((error) => {
       console.error('Error fetching users data:', error);
     })
@@ -67,6 +69,7 @@ export function Users() {
       axios.put(`http://localhost:5550/api/deleteUser/${id}`).then((res) => {
         // Remove the deleted user from the state
         if (res.data.success) setUsersData(prevData => prevData.filter(user => user._id !== id))
+        if (res.data.success) setFilterData(prevData => prevData.filter(user => user._id !== id))
       })
         .catch((error) => {
           console.error('Error delete users :', error);
@@ -93,24 +96,50 @@ export function Users() {
     });
   };
 
+  const handleSearch = (Searchede) => {
+    const filteredData = usersData.filter((item) =>item.fullName.toLowerCase().includes(Searchede.toLowerCase())
+    ||item._id.toLowerCase().includes(Searchede.toLowerCase()) 
+    ||item.role.toLowerCase().includes(Searchede.toLowerCase()) 
+    ||item.email.toLowerCase().includes(Searchede.toLowerCase()) 
+  );
+  setFilterData(filteredData)
+
+  };
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
         <CardHeader variant="gradient" color="green" className="mb-8 p-6">
-          <div className="grid grid-cols-6 gap-x-8 justify-end">
-            <Typography variant="h6" color="white">
+          <div className="grid grid-cols-4 gap-x-8 justify-end items-center">
+            <Typography variant="h6" color="white" className="col-span-1" >
               Users Table
             </Typography>
             <Typography
               as={Link}
               to="/dashboard/User/add"
-              className="text-xs font-semibold text-blue-gray-600 justify-center"
+              className="text-xs font-semibold text-blue-gray-600 justify-center col-span-1"
             >
               <Button color="blue-gray" size="sm">
                 Add User
               </Button>
             </Typography>
+            <form className='col-span-2'>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-black">
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <input
+                  type="search"
+                  id="default-search"
+                  className="block w-full p-4 pl-10 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="ID , Name , Role , Email "
+                  required
+                  onChange={(e) => {
+                    handleSearch(e.target.value)
+                  }}
+                />
+              </div>
+            </form>
           </div>
         </CardHeader>
 
@@ -134,7 +163,7 @@ export function Users() {
               </tr>
             </thead>
             <tbody>
-              {usersData
+              {FilterData
                 .sort((a, b) => (a.role === "admin" ? -1 : b.role === "admin" ? 1 : 0))
                 .map(({ _id, fullName, email, role, phoneNumber }, key) => {
                   const className = `py-3 px-5 ${key === usersData.length - 1 ? "" : "border-b border-blue-gray-50"

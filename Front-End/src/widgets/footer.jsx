@@ -7,7 +7,7 @@ export function Footer({ brandName, brandLink, routes }) {
 
   return (
     <footer className="bottom-1 py-2">
-      <div className="flex w-full flex-wrap items-center justify-center gap-6 px-2 md:justify-between">
+      <div className="flex w-full flex-wrap items-center justify-end gap-6 px-2 md:justify-end">
         <Typography variant="small" className="font-normal text-inherit">
           All Rights Reserved &copy; {year}, Sakanat .
         </Typography>

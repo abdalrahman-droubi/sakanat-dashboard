@@ -37,6 +37,7 @@ export function Provider() {
     if (confirmed) {
       axios.put(`http://localhost:5550/api/deleteProvider/${id}`).then((res) => {
         // Remove the deleted user from the state
+        if (res.data.success) setFilterData(prevData => prevData.filter(provider => provider._id !== id))
         if (res.data.success) setProviders(prevData => prevData.filter(provider => provider._id !== id))
       })
         .catch((error) => {
@@ -77,7 +78,7 @@ export function Provider() {
         <CardHeader variant="gradient" color="green" className="mb-8 p-6">
           <div className="grid grid-cols-1 sm:grid-cols-2  gap-x-2">
             <Typography variant="h6" color="white">
-              Providers Cards
+              Providers Table
             </Typography>
             <form>
               {/* <label

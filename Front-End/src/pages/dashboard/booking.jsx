@@ -17,63 +17,62 @@ import Swal from "sweetalert2";
 
 export function Booking() {
   const [bookings, setbookings] = useState([]);
-
-  const handledelete = async (id) => {
-    const confirmed = await showConfirmationPrompt();
-    if (confirmed) {
-      try {
-        await axios.put(`http://localhost:8181/bookings/${id}`);
-        getbookings(); // Refresh data after deletion
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  const showConfirmationPrompt = () => {
-    return new Promise((resolve) => {
-      Swal.fire({
-        title: "Are you sure you want to soft delete this row?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, soft delete it!",
-      }).then((result) => {
-        resolve(result.isConfirmed);
-      });
-    });
-  };
+  const [filterData, setFilterData] = useState([]);
 
   const getbookings = () => {
     axios
-      .get("http://localhost:8181/bookings")
+      .get(`http://localhost:5550/api/getAllRequest`)
       .then((response) => {
-        setbookings(response.data.rows);
+        setbookings(response.data);
+        setFilterData(response.data)
+        console.log(response);
       })
       .catch((error) => {
         console.error(error);
       });
-    // setbookings(response.date.rows)
   };
 
   useEffect(() => {
     getbookings();
   }, []);
+
+
+  const handleSearch = (Searchede) => {
+    const filteredData = bookings.filter((item) => item._id.toLowerCase().includes(Searchede.toLowerCase())
+      || item.user._id.toLowerCase().includes(Searchede.toLowerCase())
+      || item.user.fullName.toLowerCase().includes(Searchede.toLowerCase())
+      || item.phoneNumber.toLowerCase().includes(Searchede.toLowerCase())
+      || item.provider.companyName.toLowerCase().includes(Searchede.toLowerCase())
+      || item.provider._id.toLowerCase().includes(Searchede.toLowerCase())
+    );
+    setFilterData(filteredData)
+  }
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12 ">
       <Card>
         <CardHeader variant="gradient" color="green" className="mb-8 p-6">
-          <div className="grid grid-cols-6 justify-end gap-x-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2  gap-x-2">
             <Typography variant="h6" color="white">
-              Booking Table
+              Requests Table
             </Typography>
-
-            <Typography
-              as="a"
-              href="booking/add"
-              className="justify-center text-xs font-semibold text-blue-gray-600"
-            ></Typography>
+            <form>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-black">
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <input
+                  type="search"
+                  id="default-search"
+                  className="block w-full p-4 pl-10 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="request id ,Client ID, Client Name , Provider ID ,Provider Name "
+                  required
+                  onChange={(e) => {
+                    handleSearch(e.target.value)
+                  }}
+                />
+              </div>
+            </form>
           </div>
         </CardHeader>
 
@@ -81,14 +80,7 @@ export function Booking() {
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {[
-                  "bookingID",
-                  " userName",
-                  "user_id",
-                  "date",
-                  "time",
-                  "phone",
-                  "Action",
+                {["ID", "Client ID", "Client Name", "Provider ID", "Provider Name", "service type", "Details", 'Location', "Delivered on", "Requested on", "status"
                 ].map((el) => (
                   <th
                     key={el}
@@ -105,68 +97,67 @@ export function Booking() {
               </tr>
             </thead>
             <tbody>
-              {bookings.map(({ id, name, user_id, date, time, phone }, key) => {
-                const className = `py-3 px-5 ${
-                  key === bookings.length - 1
-                    ? ""
-                    : "border-b border-blue-gray-50"
-                }`;
-
-                const dateStr = date;
-                const datePart = dateStr.slice(0, 10); // Extract correct format
-                const modifiedDate = new Date(datePart);
-                modifiedDate.setDate(modifiedDate.getDate() + 1);
-                const modifiedDateStr = modifiedDate.toISOString().slice(0, 10);
+              {filterData?.map((request, key) => {
                 return (
-                  <tr key={id}>
-                    <td className={className}>
+                  <tr key={request._id}>
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
                       <div className="flex items-center gap-4">
                         <div>
-                          <Typography className="text-xs font-normal text-blue-gray-500">
-                            {id}
+                          <Typography className="text-xs font-semibold text-blue-gray-500">
+                            {request._id}
                           </Typography>
                         </div>
                       </div>
                     </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {name}
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
+                      <Typography className="text-xs font-semibold text-blue-gray-500">
+                        {request.user._id}
                       </Typography>
                     </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {user_id}
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
+                      <Typography className="text-xs font-semibold text-blue-gray-500">
+                        {request.user.fullName}
                       </Typography>
                     </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {modifiedDateStr}
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
+                      <Typography className="text-xs font-semibold text-blue-gray-500">
+                        {request.provider._id}
                       </Typography>
                     </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {time}
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
+                      <Typography className="text-xs font-semibold text-blue-gray-500">
+                        {request.provider.companyName}
                       </Typography>
                     </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {phone}
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
+                      <Typography className="text-xs font-semibold text-blue-gray-500">
+                        {request.serviceType.name}
                       </Typography>
                     </td>
-
-                    <td className={className}>
-                      <div className="grid grid-cols-2 justify-center gap-2">
-                        <div className="justify-center">
-                          <IconButton
-                            color="red"
-                            onClick={() => {
-                              handledelete(id);
-                            }}
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </IconButton>
-                        </div>
-                      </div>
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
+                      <Typography className="text-xs font-semibold text-blue-gray-500">
+                        {request.details}
+                      </Typography>
+                    </td>
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
+                      <Typography className="text-xs font-semibold text-blue-gray-500">
+                        {request.location}
+                      </Typography>
+                    </td>
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
+                      <Typography className="text-xs font-semibold text-blue-gray-500">
+                        {new Date(request.dateTime).toLocaleString()}
+                      </Typography>
+                    </td>
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
+                      <Typography className="text-xs font-semibold text-blue-gray-500">
+                        {new Date(request.createdAt).toLocaleString()}
+                      </Typography>
+                    </td>
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
+                      <Typography className={`text-sm font-semibold ${request.status === "inprogres" || request.status === "pending" ? "text-yellow-400" : request.status === "rejected" ? "text-red-700" : request.status === "completed" ? "text-green-700" : ""}`}>
+                        {request.status}
+                      </Typography>
                     </td>
                   </tr>
                 );

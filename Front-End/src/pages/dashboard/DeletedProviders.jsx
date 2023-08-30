@@ -55,7 +55,7 @@ function DeletedProviders() {
         <div className="mt-12 mb-8 flex flex-col gap-12">
             <Card>
                 <CardHeader variant="gradient" color="green" className="mb-8 p-6">
-                    <div className="grid grid-cols-6 gap-x-8 justify-end">
+                    <div className="grid grid-cols-3 gap-x-8 justify-end">
                         <Typography variant="h6" color="white">
                             Deleted Provider Table
                         </Typography>

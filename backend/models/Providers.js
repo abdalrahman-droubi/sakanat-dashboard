@@ -33,8 +33,8 @@ const ProviderSchema = new mongoose.Schema(
     services: {
       type: [
         {
-          name: {type:String},
-          price: {type:Number},
+          name: { type: String },
+          price: { type: Number },
         },
       ],
       required: true,
@@ -82,8 +82,17 @@ const ProviderSchema = new mongoose.Schema(
       default: "provider",
     },
     rate: {
-      type: Number,
-      default: 0,
+      type: {
+        rating: {
+          type: Number,
+          default: 0,
+        },
+        numRating: {
+          type: Number,
+          default: 0,
+        },
+      },
+      default: { rating: 0, numRating: 0 },
     },
   },
   {

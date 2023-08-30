@@ -12,17 +12,19 @@ function App() {
       {userType === 'admin' ? <>
         <Routes>
           <Route path="/dashboard/*" element={<Dashboard />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </>
         : userType === 'provider' ? <>
-        {console.log('aaaaa')}
           <Routes>
             <Route path="/company/*" element={<Company />} />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </>
           : userType === "notLogin" ? <>
             <Routes>
               <Route path="/auth/*" element={<Auth />} />
+              <Route path="*" element={<PageNotFound />} />
             </Routes>
           </> :
             <Loader />

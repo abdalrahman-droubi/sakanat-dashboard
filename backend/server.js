@@ -19,6 +19,7 @@ app.use('/api',require('./routers/Register'));
 app.use('/api',require('./routers/auth'));
 app.use('/api',require('./routers/user'));
 app.use('/api',require('./routers/provider'));
+app.use('/api',require('./routers/ServicesRequest'));
 
 
 

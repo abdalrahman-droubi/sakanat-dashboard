@@ -18,7 +18,12 @@ import ContactUs from "./pages/dashboard/ContactUs";
 import AboutUs from "./pages/dashboard/AboutUs";
 import DeletedUsers from "./pages/dashboard/DeletedUsers";
 import DeletedProviders from "./pages/dashboard/DeletedProviders";
-import Company from "./pages/company/Company";
+import CompanyDetails from "./pages/company/CompanyDetails";
+import RequestedServices from "./pages/company/RequestedServices";
+import ServicesInprogres from "./pages/company/ServicesInprogres";
+import CompletedServices from "./pages/company/CompletedServices";
+import RejectedDeatails from "./pages/company/RejectedDeatails";
+import EditInfo from "./pages/company/EditInfo";
 const icon = {
   className: "w-5 h-5 text-inherit",
 };
@@ -47,7 +52,7 @@ export const routes = [
       },
       {
         icon: <TableCellsIcon {...icon} />,
-        name: "Booking",
+        name: "Requests",
         path: "/booking",
         element: <Booking />,
       },
@@ -107,10 +112,40 @@ export const routes = [
     layout: "company",
     pages: [
       {
-        icon: <TableCellsIcon {...icon} />,
-        name: "profile",
+        icon: <UserCircleIcon {...icon} />,
+        name: "Company Details",
         path: "/home",
-        element: <Company />,
+        element: <CompanyDetails />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "requested services",
+        path: "/requestedServices",
+        element: <RequestedServices />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "services in progress",
+        path: "/servicesInprogres",
+        element: <ServicesInprogres />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "completed services",
+        path: "/completedServices",
+        element: <CompletedServices />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "rejected services",
+        path: "/rejectedServices",
+        element: <RejectedDeatails />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "edit info",
+        path: "/editInfo",
+        element: <EditInfo />,
       },
     ],
   },
