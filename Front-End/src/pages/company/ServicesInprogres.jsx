@@ -10,11 +10,13 @@ export default function ServicesInprogres() {
     const [servicesRequest, setServicesRequest] = useState([])
     const [FilterData, setFilterData] = useState([])
     const [refresh, setRefresh] = useState(false)
+    const [lodaer, setlodaer] = useState(false)
 
     useEffect(() => {
         axios.get(`http://localhost:5550/api/getRequestServices/inprogres/${user._id}`).then((response) => {
             setServicesRequest(response.data);
             setFilterData(response.data)
+            setlodaer(true)
             console.log(response);
         }).catch((error) => {
             console.error('Error fetching RequestedServices data:', error);
@@ -62,7 +64,7 @@ export default function ServicesInprogres() {
 
     };
     return (
-        // servicesRequest.length !== 0 ?
+        lodaer?
         <div className="mt-28 mb-8 flex flex-col gap-12 ">
             <Card>
                 <CardHeader variant="gradient" color="blue-gray" className="mb-8 p-6 bg-[#191a3e]">
@@ -191,6 +193,6 @@ export default function ServicesInprogres() {
                 </CardBody>
             </Card>
         </div>
-        // :<Loader />
+        :<Loader />
     )
 }

@@ -12,12 +12,14 @@ import {
 } from "@material-tailwind/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Loader from '../loader'
 
 import Swal from "sweetalert2";
 
 export function Booking() {
   const [bookings, setbookings] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [lodaer, setlodaer] = useState(false)
 
   const getbookings = () => {
     axios
@@ -25,6 +27,7 @@ export function Booking() {
       .then((response) => {
         setbookings(response.data);
         setFilterData(response.data)
+        setlodaer(true)
         console.log(response);
       })
       .catch((error) => {
@@ -49,6 +52,7 @@ export function Booking() {
   }
 
   return (
+    lodaer?
     <div className="mt-12 mb-8 flex flex-col gap-12 ">
       <Card>
         <CardHeader variant="gradient" color="green" className="mb-8 p-6">
@@ -167,6 +171,7 @@ export function Booking() {
         </CardBody>
       </Card>
     </div>
+     :<Loader />
   );
 }
 

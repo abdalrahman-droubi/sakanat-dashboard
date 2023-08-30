@@ -12,6 +12,7 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import Loader from '../loader'
 
 
 export function Provider() {
@@ -19,6 +20,7 @@ export function Provider() {
   const [provider, setProvider] = useState()
   const [open, setOpen] = useState(false);
   const [FilterData , setFilterData]=useState([])
+  const [lodaer, setlodaer] = useState(false)
 
   const handleOpen = () => setOpen(!open);
 
@@ -26,6 +28,7 @@ export function Provider() {
     axios.get('http://localhost:5550/api/getProvider/active').then((response) => {
       setProviders(response.data);
       setFilterData(response.data)
+      setlodaer(true)
     }).catch((error) => {
       console.error('Error fetching providers data:', error);
     })
@@ -73,6 +76,7 @@ export function Provider() {
   
 
   return (
+    lodaer?
     <div className="mt-12 mb-8 flex flex-col gap-12 ">
       <Card>
         <CardHeader variant="gradient" color="green" className="mb-8 p-6">
@@ -202,6 +206,7 @@ export function Provider() {
         </CardBody>
       </Card>
     </div>
+     :<Loader />
   );
 }
 

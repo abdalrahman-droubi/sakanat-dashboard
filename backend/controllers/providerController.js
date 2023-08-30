@@ -174,6 +174,72 @@ const updateProviderAccount = async (req, res) => {
     console.error("Error updateProviderAccount:", error);
   }
 };
+const updateProviderinfoData = async (req, res) => {
+  try {
+    const { city, serviceType, description, phoneNumber } = req.body;
+    const { id } = req.params;
+    const provider = await Provider.findById(id);
+
+    provider.city = city || provider.city;
+    provider.serviceType = serviceType;
+    provider.description = description;
+    provider.phoneNumber = phoneNumber;
+    const updatedUser = await provider.save();
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: `${error.message} in updateProviderAccount` });
+    console.error("Error updateProviderAccount:", error);
+  }
+};
+const updateServicesData = async (req, res) => {
+  const providerId = req.params.id;
+  const { services } = req.body;
+
+  try {
+    const provider = await Provider.findByIdAndUpdate(
+      providerId,
+      { services },
+      { new: true }
+    );
+
+    if (!provider) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Services updated successfully", provider });
+  } catch (error) {
+    res.status(500).json({ error: `${error.message} in updateServicesData` });
+    console.error("Error updateServicesData:", error);
+  }
+};
+const updateSchedule = async (req, res) => {
+  const companyId = req.params.id;
+  const { schedule } = req.body;
+
+  try {
+    const provider = await Provider.findByIdAndUpdate(
+      companyId,
+      { workHours:schedule },
+      { new: true }
+    );
+
+    if (!provider) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Schedule updated successfully", provider });
+  } catch (error) {
+    console.error("Error updating schedule:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 module.exports = {
   addProvider,
@@ -181,5 +247,8 @@ module.exports = {
   RetrieveProvider,
   deleteProvider,
   getOneProvider,
-  updateProviderAccount
+  updateProviderAccount,
+  updateProviderinfoData,
+  updateServicesData,
+  updateSchedule
 };

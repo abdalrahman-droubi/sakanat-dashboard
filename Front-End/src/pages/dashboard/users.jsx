@@ -15,11 +15,13 @@ import {
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { Link } from 'react-router-dom';
 import Swal from "sweetalert2";
+import Loader from '../loader'
 
 export function Users() {
   const [usersData, setUsersData] = useState([]);  // State to store users data
   const [Refresh, setRefresh] = useState(true);   // State to run useEffect that get users data
-  const [FilterData , setFilterData]=useState([])
+  const [FilterData, setFilterData] = useState([])
+  const [lodaer, setlodaer] = useState(false)
 
 
   // Fetch users data from the server
@@ -27,6 +29,7 @@ export function Users() {
     axios.get('http://localhost:5550/api/getUser/active').then((response) => {
       setUsersData(response.data);
       setFilterData(response.data)
+      setlodaer(true)
     }).catch((error) => {
       console.error('Error fetching users data:', error);
     })
@@ -97,137 +100,139 @@ export function Users() {
   };
 
   const handleSearch = (Searchede) => {
-    const filteredData = usersData.filter((item) =>item.fullName.toLowerCase().includes(Searchede.toLowerCase())
-    ||item._id.toLowerCase().includes(Searchede.toLowerCase()) 
-    ||item.role.toLowerCase().includes(Searchede.toLowerCase()) 
-    ||item.email.toLowerCase().includes(Searchede.toLowerCase()) 
-  );
-  setFilterData(filteredData)
+    const filteredData = usersData.filter((item) => item.fullName.toLowerCase().includes(Searchede.toLowerCase())
+      || item._id.toLowerCase().includes(Searchede.toLowerCase())
+      || item.role.toLowerCase().includes(Searchede.toLowerCase())
+      || item.email.toLowerCase().includes(Searchede.toLowerCase())
+    );
+    setFilterData(filteredData)
 
   };
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12">
-      <Card>
-        <CardHeader variant="gradient" color="green" className="mb-8 p-6">
-          <div className="grid grid-cols-4 gap-x-8 justify-end items-center">
-            <Typography variant="h6" color="white" className="col-span-1" >
-              Users Table
-            </Typography>
-            <Typography
-              as={Link}
-              to="/dashboard/User/add"
-              className="text-xs font-semibold text-blue-gray-600 justify-center col-span-1"
-            >
-              <Button color="blue-gray" size="sm">
-                Add User
-              </Button>
-            </Typography>
-            <form className='col-span-2'>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-black">
-                  <i className="fa-solid fa-magnifying-glass"></i>
+    lodaer ?
+      <div className="mt-12 mb-8 flex flex-col gap-12">
+        <Card>
+          <CardHeader variant="gradient" color="green" className="mb-8 p-6">
+            <div className="grid grid-cols-4 gap-x-8 justify-end items-center">
+              <Typography variant="h6" color="white" className="col-span-1" >
+                Users Table
+              </Typography>
+              <Typography
+                as={Link}
+                to="/dashboard/User/add"
+                className="text-xs font-semibold text-blue-gray-600 justify-center col-span-1"
+              >
+                <Button color="blue-gray" size="sm">
+                  Add User
+                </Button>
+              </Typography>
+              <form className='col-span-2'>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-black">
+                    <i className="fa-solid fa-magnifying-glass"></i>
+                  </div>
+                  <input
+                    type="search"
+                    id="default-search"
+                    className="block w-full p-4 pl-10 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="ID , Name , Role , Email "
+                    required
+                    onChange={(e) => {
+                      handleSearch(e.target.value)
+                    }}
+                  />
                 </div>
-                <input
-                  type="search"
-                  id="default-search"
-                  className="block w-full p-4 pl-10 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="ID , Name , Role , Email "
-                  required
-                  onChange={(e) => {
-                    handleSearch(e.target.value)
-                  }}
-                />
-              </div>
-            </form>
-          </div>
-        </CardHeader>
+              </form>
+            </div>
+          </CardHeader>
 
-        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-          <table className="w-full min-w-[640px] table-auto">
-            <thead>
-              <tr>
-                {["ID", "Name", "Email", "phone Number", "Role", "Action"].map((el) => (
-                  <th
-                    key={el}
-                    className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                  >
-                    <Typography
-                      variant="small"
-                      className="text-[11px] font-bold uppercase text-blue-gray-400"
+          <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+            <table className="w-full min-w-[640px] table-auto">
+              <thead>
+                <tr>
+                  {["ID", "Name", "Email", "phone Number", "Role", "Action"].map((el) => (
+                    <th
+                      key={el}
+                      className="border-b border-blue-gray-50 py-3 px-5 text-left"
                     >
-                      {el}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {FilterData
-                .sort((a, b) => (a.role === "admin" ? -1 : b.role === "admin" ? 1 : 0))
-                .map(({ _id, fullName, email, role, phoneNumber }, key) => {
-                  const className = `py-3 px-5 ${key === usersData.length - 1 ? "" : "border-b border-blue-gray-50"
-                    }`;
+                      <Typography
+                        variant="small"
+                        className="text-[11px] font-bold uppercase text-blue-gray-400"
+                      >
+                        {el}
+                      </Typography>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {FilterData
+                  .sort((a, b) => (a.role === "admin" ? -1 : b.role === "admin" ? 1 : 0))
+                  .map(({ _id, fullName, email, role, phoneNumber }, key) => {
+                    const className = `py-3 px-5 ${key === usersData.length - 1 ? "" : "border-b border-blue-gray-50"
+                      }`;
 
-                  return (
-                    <tr key={_id}>
-                      <td className={className}>
-                        <div className="flex items-center gap-4">
-                          <div>
-                            <Typography className="text-xs font-normal text-blue-gray-500">
-                              {_id}
-                            </Typography>
+                    return (
+                      <tr key={_id}>
+                        <td className={className}>
+                          <div className="flex items-center gap-4">
+                            <div>
+                              <Typography className="text-xs font-normal text-blue-gray-500">
+                                {_id}
+                              </Typography>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {fullName}
-                        </Typography>
-                      </td>
-                      <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {email}
-                        </Typography>
-                      </td>
-                      <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {phoneNumber}
-                        </Typography>
-                      </td>
-                      <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {role}
-                        </Typography>
-                      </td>
-                      <td className={className}>
-                        <div className="grid grid-cols-2 gap-2 justify-center">
-                          <div className="justify-center" onClick={() => handleUpdate(_id, role)}>
-                            <Typography className="text-xs font-semibold text-blue-gray-600 justify-center">
-                              <Tooltip content="change user role to admin" placement="top">
-                                <IconButton ripple={true} color="green">
-                                  <i className="fa-regular fa-pen-to-square"></i>
+                        </td>
+                        <td className={className}>
+                          <Typography className="text-xs font-semibold text-blue-gray-600">
+                            {fullName}
+                          </Typography>
+                        </td>
+                        <td className={className}>
+                          <Typography className="text-xs font-semibold text-blue-gray-600">
+                            {email}
+                          </Typography>
+                        </td>
+                        <td className={className}>
+                          <Typography className="text-xs font-semibold text-blue-gray-600">
+                            {phoneNumber}
+                          </Typography>
+                        </td>
+                        <td className={className}>
+                          <Typography className="text-xs font-semibold text-blue-gray-600">
+                            {role}
+                          </Typography>
+                        </td>
+                        <td className={className}>
+                          <div className="grid grid-cols-2 gap-2 justify-center">
+                            <div className="justify-center" onClick={() => handleUpdate(_id, role)}>
+                              <Typography className="text-xs font-semibold text-blue-gray-600 justify-center">
+                                <Tooltip content="change user role to admin" placement="top">
+                                  <IconButton ripple={true} color="green">
+                                    <i className="fa-regular fa-pen-to-square"></i>
+                                  </IconButton>
+                                </Tooltip>
+                              </Typography>
+                            </div>
+                            <div className="justify-center">
+                              <Tooltip content="Delete User" placement="top">
+                                <IconButton color="red" onClick={() => handleDelete(_id)}>
+                                  <i className="fa-solid fa-trash"></i>
                                 </IconButton>
                               </Tooltip>
-                            </Typography>
+                            </div>
                           </div>
-                          <div className="justify-center">
-                            <Tooltip content="Delete User" placement="top">
-                              <IconButton color="red" onClick={() => handleDelete(_id)}>
-                                <i className="fa-solid fa-trash"></i>
-                              </IconButton>
-                            </Tooltip>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </CardBody>
-      </Card>
-    </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </CardBody>
+        </Card>
+      </div>
+      : <Loader />
   );
 }
 

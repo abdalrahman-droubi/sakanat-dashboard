@@ -9,5 +9,8 @@ router.put('/RetrieveProvider/:id', providerControllers.RetrieveProvider)
 router.put('/deleteProvider/:id', providerControllers.deleteProvider)
 router.get('/getOneProvider/:id', providerControllers.getOneProvider)
 router.put('/updateProviderAccount/:id', providerControllers.updateProviderAccount)
+router.put('/updateProviderinfoData/:id', providerControllers.updateProviderinfoData)
+router.put('/updateServicesData/:id', providerControllers.updateServicesData)
+router.put('/updateSchedule/:id', providerControllers.updateSchedule)
 
 module.exports = router;

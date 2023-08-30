@@ -2,10 +2,13 @@ import React, { useContext, useEffect, useState } from 'react'
 import Loader from '../loader'
 import { UserDataContext } from '@/context/userDataContext'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import Swal from "sweetalert2";
 
 
 function EditInfo() {
     const { user } = useContext(UserDataContext)
+    const Navigate = useNavigate()
     const [AccountData, setAccountData] = useState({
         companyName: user?.companyName,
         password: "",
@@ -13,12 +16,15 @@ function EditInfo() {
     })
     const [infoData, setinfoData] = useState({
         city: user?.city,
-        password: "",
-        newPassword: ""
+        serviceType: user?.serviceType,
+        description: user?.description,
+        phoneNumber: `0${user?.phoneNumber}`,
     })
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [errors, setErrors] = useState();
+    const [editedServices, setEditedServices] = useState([...user?.services]);
+    const [scheduleData, setScheduleData] = useState(user?.workHours);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -44,6 +50,27 @@ function EditInfo() {
         }));
     };
 
+    const handleServiceChange = (event, index, field) => {
+        const newValue = event.target.value;
+        setEditedServices((prevServices) => {
+            const updatedServices = [...prevServices];
+            updatedServices[index][field] = newValue;
+            return updatedServices;
+        });
+    };
+
+    const handleWorkHouersChange = (day, field, value) => {
+        setScheduleData((prevSchedule) => ({
+            ...prevSchedule,
+            [day]: {
+                ...prevSchedule[day],
+                [field]: value,
+            },
+        }));
+        console.log(scheduleData);
+    };
+
+
     const handleFormSubmit = (event) => {
         event.preventDefault();
         axios
@@ -51,6 +78,8 @@ function EditInfo() {
             .then((response) => {
                 console.log('Data updated successfully:', response.data);
                 setErrors()
+                Swal.fire('Update successfully')
+                Navigate("/company/home")
             })
             .catch((error) => {
                 console.error('Error updating data:', error);
@@ -58,7 +87,47 @@ function EditInfo() {
                 setErrors(error.response.data.error)
             });
     };
+    const handleinfoDataSubmit = (event) => {
+        event.preventDefault();
+        axios
+            .put(`http://localhost:5550/api/updateProviderinfoData/${user._id}`, infoData)
+            .then((response) => {
+                console.log('Data updated successfully:', response.data);
+                Swal.fire('Update successfully')
+                Navigate("/company/home")
+            })
+            .catch((error) => {
+                console.error('Error updating data:', error);
+            });
+    };
 
+    const handleEditedServicesSubmit = (event) => {
+        event.preventDefault();
+        axios
+            .put(`http://localhost:5550/api/updateServicesData/${user._id}`, { services: editedServices })
+            .then((response) => {
+                console.log('Services updated successfully:', response.data);
+                Swal.fire('Update successfully')
+                Navigate("/company/home")
+            })
+            .catch((error) => {
+                console.error('Error updating services:', error);
+            });
+    };
+
+    const handleWorkHoursSubmit = (event) => {
+        event.preventDefault();
+        axios
+            .put(`http://localhost:5550/api/updateSchedule/${user._id}`, { schedule: scheduleData })
+            .then((response) => {
+                console.log('Schedule updated successfully:', response.data);
+                Swal.fire('Update successfully')
+                Navigate("/company/home")
+            })
+            .catch((error) => {
+                console.error('Error updating schedule:', error);
+            });
+    };
     return (
         <>
             {user ?
@@ -173,7 +242,7 @@ function EditInfo() {
                         <h1 className="text-xl font-bold text-gray-700 capitalize dark:text-white">
                             info settings
                         </h1>
-                        <form>
+                        <form onSubmit={handleinfoDataSubmit}>
                             <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
                                 <div>
                                     <label
@@ -205,64 +274,20 @@ function EditInfo() {
                                 <div>
                                     <label
                                         className="text-gray-700 dark:text-gray-200"
-                                        htmlFor="emailAddress"
-                                    >
-                                        Email Address
-                                    </label>
-                                    <input
-                                        id="emailAddress"
-                                        type="email"
-                                        className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-gray-700 dark:text-gray-200" htmlFor="password">
-                                        Password
-                                    </label>
-                                    <input
-                                        id="password"
-                                        type="password"
-                                        className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
-                                    />
-                                </div>
-                                <div>
-                                    <label
-                                        className="text-gray-700 dark:text-gray-200"
                                         htmlFor="passwordConfirmation"
                                     >
-                                        Password Confirmation
+                                        Service Type
                                     </label>
-                                    <input
-                                        id="passwordConfirmation"
-                                        type="password"
+                                    <select
                                         className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
-                                    />
-                                </div>
-                                <div>
-                                    <label
-                                        className="text-gray-700 dark:text-gray-200"
-                                        htmlFor="passwordConfirmation"
+                                        value={infoData.serviceType}
+                                        onChange={handleInputChangeInfo}
+                                        name='serviceType'
                                     >
-                                        Color
-                                    </label>
-                                    <input
-                                        id="color"
-                                        type="color"
-                                        className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
-                                    />
-                                </div>
-                                <div>
-                                    <label
-                                        className="text-gray-700 dark:text-gray-200"
-                                        htmlFor="passwordConfirmation"
-                                    >
-                                        Select
-                                    </label>
-                                    <select className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring">
-                                        <option>Surabaya</option>
-                                        <option>Jakarta</option>
-                                        <option>Tangerang</option>
-                                        <option>Bandung</option>
+                                        <option value='Hostel'>Hostel</option>
+                                        <option value='House Keeping'>House Keeping</option>
+                                        <option value='Dry Clean'>Dry Clean</option>
+                                        <option value='Maintenance'>Maintenance </option>
                                     </select>
                                 </div>
                                 <div>
@@ -270,81 +295,136 @@ function EditInfo() {
                                         className="text-gray-700 dark:text-gray-200"
                                         htmlFor="passwordConfirmation"
                                     >
-                                        Range
-                                    </label>
-                                    <input
-                                        id="range"
-                                        type="range"
-                                        className="block w-full py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
-                                    />
-                                </div>
-                                <div>
-                                    <label
-                                        className="text-gray-700 dark:text-gray-200"
-                                        htmlFor="passwordConfirmation"
-                                    >
-                                        Date
-                                    </label>
-                                    <input
-                                        id="date"
-                                        type="date"
-                                        className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
-                                    />
-                                </div>
-                                <div>
-                                    <label
-                                        className="text-gray-700 dark:text-gray-200"
-                                        htmlFor="passwordConfirmation"
-                                    >
-                                        Text Area
+                                        Description
                                     </label>
                                     <textarea
+                                        maxLength="300"
                                         id="textarea"
                                         type="textarea"
                                         className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
-                                        defaultValue={""}
+                                        value={infoData.description}
+                                        onChange={handleInputChangeInfo}
+                                        name='description'
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700">Image</label>
-                                    <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                        <div className="space-y-1 text-center">
-                                            <svg
-                                                className="mx-auto h-12 w-12 text-gray-700"
-                                                stroke="currentColor"
-                                                fill="none"
-                                                viewBox="0 0 48 48"
-                                                aria-hidden="true"
-                                            >
-                                                <path
-                                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                    strokeWidth={2}
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
-                                            </svg>
-                                            <div className="flex text-sm text-gray-600">
-                                                <label
-                                                    htmlFor="file-upload"
-                                                    className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
-                                                >
-                                                    <span className="">Upload a file</span>
-                                                    <input
-                                                        id="file-upload"
-                                                        name="file-upload"
-                                                        type="file"
-                                                        className="sr-only"
-                                                    />
-                                                </label>
-                                                <p className="pl-1 text-gray-700">or drag and drop</p>
-                                            </div>
-                                            <p className="text-xs text-gray-700">PNG, JPG, GIF up to 10MB</p>
-                                        </div>
-                                    </div>
+                                    <label className="text-gray-700 dark:text-gray-200" htmlFor="number">
+                                        Phone Number
+                                    </label>
+                                    <input
+                                        id="number"
+                                        type="number"
+                                        className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+                                        value={infoData.phoneNumber}
+                                        onChange={handleInputChangeInfo}
+                                        name='phoneNumber'
+                                    />
                                 </div>
                             </div>
                             <div className="flex justify-end mt-6">
-                                <button className="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-gray-600">
+                                <button
+                                    className="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-gray-600"
+                                    type='submit'
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+                    <section className="max-w-4xl p-6 mx-auto bg-white rounded-md shadow-2xl dark:bg-gray-800 mt-20">
+                        <h1 className="text-xl font-bold text-gray-700 capitalize dark:text-white">
+                            Services settings
+                        </h1>
+                        <form onSubmit={handleEditedServicesSubmit}>
+                            <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+                                {user?.services.map((ele, index) =>
+                                    <>
+                                        <div>
+                                            <label
+                                                className="text-gray-700 dark:text-gray-200"
+                                                htmlFor="name"
+                                            >
+                                                Service Name {index + 1}
+                                            </label>
+                                            <input
+                                                id="name"
+                                                type="text"
+                                                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+                                                value={editedServices[index]?.name}
+                                                onChange={(event) => handleServiceChange(event, index, 'name')}
+                                                name='name'
+                                            />
+
+                                        </div>
+                                        <div>
+                                            <label
+                                                className="text-gray-700 dark:text-gray-200"
+                                                htmlFor="price"
+                                            >
+                                                Service Price {index + 1}
+                                            </label>
+                                            <input
+                                                id="price"
+                                                type="number"
+                                                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+                                                value={editedServices[index]?.price}
+                                                onChange={(event) => handleServiceChange(event, index, 'price')}
+                                            />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                            <div className="flex justify-end mt-6">
+                                <button
+                                    className="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-gray-600"
+
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+                    <section className="max-w-4xl p-6 mx-auto bg-white rounded-md shadow-2xl dark:bg-gray-800 mt-20">
+                        <h1 className="text-xl font-bold text-gray-700 capitalize dark:text-white">
+                            work Hours settings
+                        </h1>
+                        <form onSubmit={handleWorkHoursSubmit}>
+                            {scheduleData &&
+                                <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+                                    {Object.keys(scheduleData).slice(0, 7).map((day) => (
+                                        <div key={day}>
+                                            <h3>{day}</h3>
+                                            <div>
+                                                <label className="text-gray-700 dark:text-gray-200">
+                                                    Start:
+                                                    <input
+                                                        type="text"
+                                                        className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+                                                        value={scheduleData[day].start}
+                                                        onChange={(e) => handleWorkHouersChange(day, 'start', e.target.value)}
+                                                    />
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <label className="text-gray-700 dark:text-gray-200">
+                                                    End:
+                                                    <input
+                                                        type="text"
+                                                        className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+                                                        value={scheduleData[day].end}
+                                                        onChange={(e) => handleWorkHouersChange(day, 'end', e.target.value)}
+                                                    />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            }
+                            <div className="flex justify-end mt-6">
+                                <button
+                                    className="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-gray-600"
+
+                                >
                                     Save
                                 </button>
                             </div>
@@ -353,7 +433,8 @@ function EditInfo() {
 
                 </>
 
-                : <Loader />}
+                : <Loader />
+            }
         </>
     )
 }
